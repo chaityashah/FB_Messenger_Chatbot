@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script>
+	(function(d, s, id){
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) {return;}
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'Messenger'));
+
+	window.extAsyncInit = function() {
+		setTimeout(function(){ takeSnap(); }, 2000);
+	};
+  	
+  	function takeSnap() {
+  		var canvas = document.createElement('canvas');
+		canvas.width = 640;
+		canvas.height = 480;
+		var ctx = canvas.getContext('2d');
+		//document.body.appendChild(canvas);
+
+		var video = document.getElementById('live_video');
+		alert("taking snap");
+		ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		var dataURI = canvas.toDataURL('image/jpeg'); // can also use 'image/png'
+		var b = dataURItoBlob(dataURI);
+		//console.log("b >>"+b);
+
+		var myImage = document.getElementById('snapshot');
+		myImage.src = dataURI;
+		//console.log("dataURI:"+dataURI);
+		//console.log("imageData:"+imageData);
+		identifyEmotion(b);
+  	}
+
+  	function identifyEmotion(dataUri) {
+
+  		var params = {
+            // Request parameters
+        };
+		//var b = dataURItoBlob(dataUri);
+		//console.log("b >>"+b);
+
+  		$.ajax({
+            // NOTE: You must use the same location in your REST call as you used to obtain your subscription keys.
+            //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the 
+            //   URL below with "westcentralus".
+            url: "https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?" + $.param(params),
+            beforeSend: function(xhrObj){
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type","application/octet-stream");
+
+                // NOTE: Replace the "Ocp-Apim-Subscription-Key" value with a valid subscription key.
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","c82115bf649743c589afb51877089a7e");
+            },
+            type: "POST",
+            processData: false,
+            // Request body
+            //data: '{"url": "https://happyfacesprepschool.com/wp-content/uploads/2010/09/173-Copy-e1407188108897-1096x500.jpg"}',
+            data: dataUri
+        })
+        .done(function(data) {
+            alert("success:");
+            console.log(JSON.stringify(data));
+            processResult(data[0]);
+        })
+        .fail(function() {
+            alert("error");
+        });
+  	}
+
+  	function dataURItoBlob(dataURI) {
+	  // convert base64 to raw binary data held in a string
+	  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+	  var byteString = atob(dataURI.split(',')[1]);
+
+	  // separate out the mime component
+	  var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+
+	  // write the bytes of the string to an ArrayBuffer
+	  var ab = new ArrayBuffer(byteString.length);
+
+	  // create a view into the buffer
+	  var ia = new Uint8Array(ab);
+
+	  // set the bytes of the buffer to the correct values
+	  for (var i = 0; i < byteString.length; i++) {
+	      ia[i] = byteString.charCodeAt(i);
+	  }
+
+	  // write the ArrayBuffer to a blob, and you're done
+	  var blob = new Blob([ab], {type: mimeString});
+	  return blob;
+
+	}
+
+	var emotionIdx = {"0":"anger",
+						"1":"contempt",
+						"2":"disgust",
+						"3":"fear",
+						"4":"happiness",
+						"5":"neutral",
+						"6":"sadness",
+						"7":"surprise"
+					};
+
+	function processResult(data) {
+		console.log("processResult >>"+JSON.stringify(data));
+		var scoresObj = data["scores"];
+		console.log("scoresObj >>"+JSON.stringify(scoresObj));
+		var scoreArray = [];
+		scoreArray[0] = scoresObj["anger"];
+		scoreArray[1] = scoresObj["contempt"];
+		scoreArray[2] = scoresObj["disgust"];
+		scoreArray[3] = scoresObj["fear"];
+		scoreArray[4] = scoresObj["happiness"];
+		scoreArray[5] = scoresObj["neutral"];
+		scoreArray[6] = scoresObj["sadness"];
+		scoreArray[7] = scoresObj["surprise"];
+
+		var i = scoreArray.indexOf(Math.max(...scoreArray));
+
+		console.log("Emotion >>"+emotionIdx[i]);
+		alert("Emotion >> "+emotionIdx[i]);
+
+	}
+
+	</script>
+</head>
+<body >
+	<video id="live_video">Hi</video>
+    <script src="webcam.js"></script>
+    <img id="snapshot"/>
+</body>
+</html>
+
+
+

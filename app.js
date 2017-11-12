@@ -17,7 +17,10 @@ const
   express = require('express'),
   https = require('https'),  
   request = require('request'),
-  Shopify = require('shopify-api-node');
+  Shopify = require('shopify-api-node'),
+  Jimp = require('jimp');
+  //$ = require('jquery'),
+  //webcam = require('./public/webcam');
 
 var app = express();
 app.set('port', process.env.PORT || 5000);
@@ -73,6 +76,10 @@ const shopify = new Shopify({
   apiKey: SHOPIFY_API_KEY,
   password: SHOPIFY_API_PASSWORD
 });
+
+let imageCount = 0;
+let productId = 0;
+let productImg = '';
 
 
 /*
@@ -132,6 +139,7 @@ app.get('/product_description', function(req, res) {
     console.log("[app.get] product id:" + product_id);
     var sh_product = shopify.product.get(product_id);
     sh_product.then(function(product) {
+      console.log("<<<<<<<<<<<<<product>>>>>>>>>>>"+JSON.stringify(product));
       console.log(product.options[0].values);
       res.status(200).send(product.body_html);
     }, function(error) {
@@ -195,6 +203,9 @@ app.post('/webhook', function (req, res) {
   }
 });
 
+function firstEntity(nlp, name) {
+    return nlp && nlp.entities && nlp.entities && nlp.entities[name] && nlp.entities[name][0];
+}
 /*
  * Message Event
  *
@@ -219,21 +230,150 @@ function receivedMessage(event) {
     return;
   }
 
+  var greeting = firstEntity(message.nlp, 'greetings');
+  if (greeting && greeting.confidence > 0.8) {
+
+    request({
+      uri: 'https://graph.facebook.com/v2.6/'+senderID,
+      qs: {fields:'first_name',  access_token: FB_PAGE_ACCESS_TOKEN },
+      method: 'GET',
+      //json: messageData
+
+    }, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log("response>>"+JSON.stringify(response));
+        var body = {};
+        body = JSON.parse(response.body);
+        var firstName = body["first_name"];
+        sendTextMessage(senderID, 'Hi '+firstName);
+        setTimeout(function(){ sendTextMessage(senderID, 'Would you like to try something on?'); }, 2000);
+        
+        var recipientId = body.recipient_id;
+        var messageId = body.message_id;
+
+        if (messageId) {
+          console.log("[callSendAPI] Successfully sent message with id %s to recipient %s", 
+            messageId, recipientId);
+        } else {
+        console.log("[callSendAPI] Successfully called Send API for recipient %s", 
+          recipientId);
+        }
+      } else {
+        console.error("[callSendAPI] Send API call failed", response.statusCode, response.statusMessage, body.error);
+      }
+    });  
+
+    //const name = JSON.parse( request('https://graph.facebook.com/v2.6/${senderID}?fields=first_name&access_token=${FB_PAGE_ACCESS_TOKEN}'));
+    
+    return;
+  }
   var messageText = message.text;
+  var messageAttachments = message.attachments;
+
   if (messageText) {
 
     var lcm = messageText.toLowerCase();
     switch (lcm) {
       // if the text matches any special keywords, handle them accordingly
       case 'help':
+         
         sendHelpOptionsAsButtonTemplates(senderID);
         break;
-      
+      case 'generic':
+         
+        sendHelpOptionsAsButtonTemplates(senderID);
+        break;
+      case 'yes':
+        sendTextMessage(senderID, '💃🏼');
+         
+        sendTextMessage(senderID, 'Here are a few options');
+        //sendHelpOptionsAsButtonTemplates(senderID);
+        var payload = JSON.stringify({action: 'QR_GET_PRODUCT_LIST', limit: 5});
+        respondToHelpRequestWithTemplates(senderID, payload);
+        //const shopifyData =  callShopifyApi();
+         
+        // sendGenericMessage(senderID, shopifyData);
+        break;
+      case 'no':
+         
+        sendTextMessage(senderID, '😭');
+         
+        sendTextMessage(senderID, 'Okay, goodbye!');
+         
+        sendTextMessage(senderID, '👻');
+        break;
+      case 'bye':
+        sendTextMessage(senderID, 'BYE');
+         
+        sendTextMessage(senderID, '👻');
+        break;
+
+      case 'something':
+
+      break;
+
       default:
+        //  sendGenericMessage(senderID).catch(e => { return; } );
+        //const name = JSON.parse( request('https://graph.facebook.com/v2.6/${senderID}?fields=first_name&access_token=${FB_PAGE_ACCESS_TOKEN}'));
+        //sendTextMessage(senderID, 'Hi ${name.first_name}');
+        //sendTextMessage(senderID, 'Would you like to try something on?');
+      //default:
         // otherwise, just echo it back to the sender
-        sendTextMessage(senderID, messageText);
+        //sendTextMessage(senderID, messageText);
+         
+        sendTextMessage(senderID, 'This sounds something new to me, can you please elobarate?');
     }
+  } else if (messageAttachments) {
+     
+    sendTextMessage(senderID, '🔥');
+     
+    mergeImages(senderID, messageAttachments[0].payload.url);
+    //sendGeneratedImage(senderID, messageAttachments);
   }
+}
+
+function mergeImages(senderID, messageAttachments) {
+  Jimp.read(messageAttachments).then(function (image_face) {
+      Jimp.read(productImg, function (err, image_costume) {
+        const resizedBase = image_costume.resize(800, Jimp.AUTO);
+        const resizedFace = image_face.resize(160, Jimp.AUTO);
+        const xPosition = 340;
+        const yPosition = 10;//resizedBase.bitmap.width;
+        const newImage = resizedBase.composite(resizedFace, xPosition, yPosition);
+        const imageName = 'image-'+imageCount+'.jpg';
+        newImage.write('public/images/'+imageName, function(error, result) {
+          imageCount ++;
+          const remixedUrl = 'http://65f5fd2f.ngrok.io/images/'+imageName;
+          sendImageMessage(senderID, remixedUrl);
+        });
+      });
+  }).catch(function (err) {
+      // handle an exception 
+  });
+}
+
+function sendGeneratedImage(senderID, messageAttachments) {
+  const base = userSelectedImage;
+  const face = messageAttachments[0].payload.url; 
+  userUploadedFace = face;
+  const remixed = imageMixer(base, face);
+  const remixedUrl = 'http://65f5fd2f.ngrok.io/images/${remixed}';
+  sendImageMessage(senderID, remixedUrl);
+}
+
+function addDelay(recipientId, withTyping = true, duration = 500) {
+    var messageData = {
+      recipient: {
+        id: recipientId
+      },
+      sender_action: "typing_on",
+    };
+    if (withTyping) {
+       callSendAPI(messageData)
+    }
+
+setTimeout(function(){ withTyping?  callSendAPI(messageData) : null; }, duration);
+
 }
 
 /*
@@ -251,12 +391,12 @@ function sendHelpOptionsAsButtonTemplates(recipientId) {
         type:"template",
         payload:{
           template_type:"button",
-          text:"Click the button before to get a list of 3 of our products.",
+          text:"Click the button before to get a list of 5 of our products.",
           buttons:[
             {
               "type":"postback",
-              "title":"Get 3 products",
-              "payload":JSON.stringify({action: 'QR_GET_PRODUCT_LIST', limit: 3})
+              "title":"Get 5 products",
+              "payload":JSON.stringify({action: 'QR_GET_PRODUCT_LIST', limit: 5})
             }
             // limit of three buttons 
           ]
@@ -319,7 +459,7 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
       payload: JSON.stringify(payload)
     };
   }
-
+  console.log("<<<<<<<<<<<requestPayload.action>>>>>>>>>>>>>"+requestPayload.action);
   switch (requestPayload.action) {
     case 'QR_GET_PRODUCT_LIST':
       var products = shopify.product.list({ limit: requestPayload.limit});
@@ -335,10 +475,10 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
                 "type":"web_url",
                 "url": url,
                 "title":"Read description",
-                "webview_height_ratio": "compact",
+                "webview_height_ratio": "full",
                 "messenger_extensions": "true"
               },
-              sectionButton('Get options', 'QR_GET_PRODUCT_OPTIONS', {id: product.id})
+              sectionButton('Try On', 'QR_TRY_PRODUCT', {id: product.id, img:product.image.src})
             ]
           });
         });
@@ -377,9 +517,12 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
             id: recipientId
           },
           message: {
-            text: options.substring(0, 640),
+            //text: options.substring(0, 640),
+            text: 'Please Choose your Size',
             quick_replies: [
-              textButton('Get 3 products', 'QR_GET_PRODUCT_LIST', {limit: 3})
+              textButton('Size S', 'QR_CHOOSE_OPTION', {size:'S'}),
+              textButton('Size M', 'QR_CHOOSE_OPTION', {size:'M'}),
+              textButton('Size L', 'QR_CHOOSE_OPTION', {size:'L'})
             ]
           },
         };
@@ -387,6 +530,68 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
       });
 
 
+
+      break;
+
+      case 'QR_CHOOSE_OPTION':
+        var messageData = {
+          recipient: {
+            id: recipientId
+          },
+          message: {
+            text: 'Nice !!! You selected size -> '+requestPayload.size+ ' Are you sure you want to buy this item? Click Buy now!',
+            quick_replies: [
+              textButton('Buy now!', 'QR_BUY_NOW', {})
+            ]
+          },
+        };
+        callSendAPI(messageData);
+
+      break;
+
+      case 'QR_TRY_PRODUCT':
+        console.log("QR_TRY_PRODUCT>>>>>"+requestPayload.id);
+        productId = requestPayload.id;
+        productImg = requestPayload.img;
+        var messageData = {
+          recipient: {
+            id: recipientId
+          },
+          message: {
+            text: 'Please upload your photo.'
+          },
+        };
+        callSendAPI(messageData);
+      break;
+
+      case 'QR_BUY_NOW':
+        var url = HOST_URL + "/feedback.html";
+        messageData = {
+          recipient: {
+            id: recipientId
+          },
+           message:{
+            attachment:{
+              type:"template",
+              payload:{
+                template_type:"button",
+                text:"Thank you for your purchase. Please click on Feedback button",
+                buttons:[
+                  {
+                    "type":"web_url",
+                    "url": url,
+                    "title":"Live Feedback",
+                    "webview_height_ratio": "compact",
+                    "messenger_extensions": "true"
+                  }
+                  // limit of three buttons 
+                ]
+              }
+            }
+          }
+        }
+
+        callSendAPI(messageData);
 
       break;
   }
@@ -500,11 +705,11 @@ function callSendProfile() {
       "greeting":[
           {
           "locale":"default",
-          "text":`Hi there! I'm a bot here to assist you with Candyboxx's Shopify store. To get started, click the "Get Started" button or type "help".`
+          "text":`Hi I am chat-bot. Here to change your online shopping experience. To get started, call me with greeting.`
           }
       ] ,
       "get_started": {
-        "payload": JSON.stringify({action: 'QR_GET_PRODUCT_LIST', limit: 3})
+        "payload": JSON.stringify({action: 'something', limit: 0})
       },
       "whitelisted_domains":[
         HOST_URL
@@ -524,6 +729,50 @@ function callSendProfile() {
       console.error("[callSendProfile] Send profile call failed", response.statusCode, response.statusMessage, body.error);
     }
   });  
+}
+
+function sendImageMessage(recipientId, url) {
+  console.log(recipientId, url);
+  console.log("productId>>>"+productId);
+  var options = {
+    action: 'QR_GET_PRODUCT_OPTIONS',
+    id:productId
+  };
+  console.log("<<<<<<<options>>>>>>>>"+JSON.stringify(options));
+
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    "message":{
+      "attachment":{
+        "type":"template",
+        "payload":{
+          "template_type":"generic",
+          "elements":[
+             {
+              "title":"Outfit simulator",
+              "image_url":url,
+              "default_action": {
+                "type": "web_url",
+                "url": url,
+              },
+              buttons: [
+                {
+                type: "postback",
+                title: "Get options!",
+                payload: JSON.stringify(options),
+                }
+               ],                  
+            }
+          ],
+        }
+      }
+    }
+   
+  };
+  // console.log(messageData);
+  callSendAPI(messageData);
 }
 
 /*
