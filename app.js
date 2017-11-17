@@ -594,7 +594,15 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
 
       break;
       case 'something':
-
+        var messageData = {
+          recipient: {
+            id: recipientId
+          },
+          message: {
+            text: 'Welcome to Shopify store..I am here to help.'
+          },
+        };
+        callSendAPI(messageData);
       break;
   }
 
