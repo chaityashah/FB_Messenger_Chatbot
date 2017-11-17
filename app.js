@@ -360,7 +360,7 @@ function sendGeneratedImage(senderID, messageAttachments) {
   const remixedUrl = 'http://65f5fd2f.ngrok.io/images/${remixed}';
   sendImageMessage(senderID, remixedUrl);
 }
-
+/*
 function addDelay(recipientId, withTyping = true, duration = 500) {
     var messageData = {
       recipient: {
@@ -371,7 +371,7 @@ function addDelay(recipientId, withTyping = true, duration = 500) {
     if (withTyping) {
        callSendAPI(messageData)
     }
-
+*/
 setTimeout(function(){ withTyping?  callSendAPI(messageData) : null; }, duration);
 
 }
