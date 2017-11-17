@@ -343,7 +343,7 @@ function mergeImages(senderID, messageAttachments) {
         const imageName = 'image-'+imageCount+'.jpg';
         newImage.write('public/images/'+imageName, function(error, result) {
           imageCount ++;
-          const remixedUrl = 'http://65f5fd2f.ngrok.io/images/'+imageName;
+          const remixedUrl = 'https://mysterious-atoll-91672.herokuapp.com/images/'+imageName;
           sendImageMessage(senderID, remixedUrl);
         });
       });
@@ -357,7 +357,7 @@ function sendGeneratedImage(senderID, messageAttachments) {
   const face = messageAttachments[0].payload.url; 
   userUploadedFace = face;
   const remixed = imageMixer(base, face);
-  const remixedUrl = 'http://65f5fd2f.ngrok.io/images/${remixed}';
+  const remixedUrl = 'https://mysterious-atoll-91672.herokuapp.com/images/${remixed}';
   sendImageMessage(senderID, remixedUrl);
 }
 /*
