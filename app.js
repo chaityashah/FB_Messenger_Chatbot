@@ -372,7 +372,7 @@ function addDelay(recipientId, withTyping = true, duration = 500) {
        callSendAPI(messageData)
     }
 */
-setTimeout(function(){ withTyping?  callSendAPI(messageData) : null; }, duration);
+setTimeout(function(){ withTyping?  callSendAPI(messageData) : null; }, 2000);
 
 
 /*
