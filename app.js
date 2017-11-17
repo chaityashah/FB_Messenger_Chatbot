@@ -374,7 +374,6 @@ function addDelay(recipientId, withTyping = true, duration = 500) {
 */
 setTimeout(function(){ withTyping?  callSendAPI(messageData) : null; }, duration);
 
-}
 
 /*
  * Send a message with buttons.
