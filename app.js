@@ -593,6 +593,9 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
         callSendAPI(messageData);
 
       break;
+      case 'something':
+
+      break;
   }
 
 }
