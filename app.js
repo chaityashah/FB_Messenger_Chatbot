@@ -227,7 +227,7 @@ function receivedMessage(event) {
     console.log("[receivedMessage] quick_reply.payload (%s)", 
       message.quick_reply.payload);
     handleQuickReplyResponse(event);
-    return;
+    return; 
   }
 
   var greeting = firstEntity(message.nlp, 'greetings');
@@ -307,10 +307,6 @@ function receivedMessage(event) {
          
         sendTextMessage(senderID, '👻');
         break;
-
-      case 'something':
-
-      break;
 
       default:
         //  sendGenericMessage(senderID).catch(e => { return; } );
@@ -491,7 +487,7 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
             attachment: {
               type: "template",
               payload: {
-                template_type: "generic",
+                template_type: "media",
                 elements: templateElements
               }
             }
