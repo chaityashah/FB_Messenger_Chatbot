@@ -4,11 +4,11 @@
 	<title></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 	<style>
-		body { padding: 2em; }
+		body { padding: 1em; }
 		.loginBtn {
 			box-sizing: border-box;
 			position: relative;
-			margin: 0.2em;
+			margin: 0 auto;
 			padding: 0 15px 0 15px;
 			border: none;
 			text-align: left;
@@ -172,10 +172,10 @@ function processResult(data) {
 	<button class="loginBtn loginBtn--facebook" onclick="takeSnap();return false;">
 		Give Live Feedback
 	</button>
-	<div id="message" style="min-height: 50px"><span id="msgTxt" style="font-size: 20px;color: grey;" onclick="change();"></span></div>
-	<video id="live_video" style="width: 250px">Hi</video>
+	<div id="message" style="min-height: 30px;display: table; margin: 0 auto;"><span id="msgTxt" style="font-size: 20px;color: grey;">Analyzing Your Beautiful Face....</span></div>
+	<video id="live_video" style="width: 310px">Hi</video>
 	<script src="webcam.js"></script>
-	<img id="snapshot" style="width: 250px"/>
+	<img id="snapshot" style="width: 310px"/>
 	<script>
 		var text = ["anger","contempt","disgust","fear","happiness","neutral","sadness","surprise"];
 		var counter = 0;
