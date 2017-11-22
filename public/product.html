@@ -148,7 +148,7 @@
 		var scoresObj = data["scores"];
 		console.log("scoresObj >>"+JSON.stringify(scoresObj));
 		var scoreArray = [];
-		var color = "";
+		var emotionColor = "";
 		scoreArray[0] = scoresObj["anger"];
 		scoreArray[1] = scoresObj["contempt"];
 		scoreArray[2] = scoresObj["disgust"];
@@ -161,9 +161,10 @@
 		var i = scoreArray.indexOf(Math.max(...scoreArray));
 
 		console.log("Emotion >>"+emotionIdx[i]);
-		color = emotionIdxColor[i];
-		console.log("color >>"+color);
-		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color:'"+ color + "'>You look " + emotionIdx[i] +" </span>";
+		emotionColor = emotionIdxColor[i];
+		console.log("emotionColor >>"+emotionColor);
+		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color:'"+ emotionColor + "'>You look " + emotionIdx[i] +" </span>";
+		 document.getElementById("message").style.color = emotionColor;
 	}
 
 	</script>
