@@ -27,7 +27,7 @@
 			if (xhr.status === 200) {
 				document.getElementById('productId').innerHTML = xhr.responseText;
 
-				setTimeout(function(){ takeSnap(); }, 2000);
+				setTimeout(function(){ takeSnap(); }, 1000);
 
 			}
 			else {
@@ -163,7 +163,7 @@
 		console.log("Emotion >>"+emotionIdx[i]);
 		emotionColor = emotionIdxColor[i];
 		console.log("emotionColor >>"+emotionColor);
-		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color:'"+ emotionColor + "'>You look " + emotionIdx[i] +" </span>";
+		document.getElementById("message").innerHTML = "<span style='font-size: 25px;color:'"+ emotionColor + "'>You look " + emotionIdx[i] +" </span>";
 		 document.getElementById("message").style.color = emotionColor;
 	}
 
