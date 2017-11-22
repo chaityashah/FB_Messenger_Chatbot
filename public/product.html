@@ -25,6 +25,7 @@
 		xhr.open('GET', '/product_description?id='+product_id);
 		xhr.onload = function() {
 			if (xhr.status === 200) {
+				document.getElementById('message').innerHTML = "";
 				document.getElementById('productId').innerHTML = xhr.responseText;
 
 				setTimeout(function(){ takeSnap(); }, 2000);
@@ -46,6 +47,7 @@
 
 		var video = document.getElementById('live_video');
 		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: red;'>Taking snap</span>";
+		setTimeout(function(){ console.log("do nothing"); }, 2000);
 		ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 		var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 		var dataURI = canvas.toDataURL('image/jpeg'); // can also use 'image/png'
@@ -155,7 +157,7 @@
 <body >
 	<div id="message" style="min-height: 50px"><span style="font-size: 20px;color: grey;">Fetching product details</span></div>
 	<div id="productId">
-		Loading product...
+		
 	</div>
 	<video id="live_video" style="width: 200px">Hi</video>
     <script src="webcam.js"></script>
