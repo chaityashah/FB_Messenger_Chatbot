@@ -25,7 +25,6 @@
 		xhr.open('GET', '/product_description?id='+product_id);
 		xhr.onload = function() {
 			if (xhr.status === 200) {
-				document.getElementById('message').innerHTML = "";
 				document.getElementById('productId').innerHTML = xhr.responseText;
 
 				setTimeout(function(){ takeSnap(); }, 2000);
@@ -134,12 +133,22 @@
 						"6":"sadness",
 						"7":"surprise"
 					};
+	var emotionIdxColor = {"0":"red",
+						"1":"black",
+						"2":"black",
+						"3":"yellow",
+						"4":"green",
+						"5":"black",
+						"6":"green",
+						"7":"blue"
+					};
 
 	function processResult(data) {
 		console.log("processResult >>"+JSON.stringify(data));
 		var scoresObj = data["scores"];
 		console.log("scoresObj >>"+JSON.stringify(scoresObj));
 		var scoreArray = [];
+		var color = "black";
 		scoreArray[0] = scoresObj["anger"];
 		scoreArray[1] = scoresObj["contempt"];
 		scoreArray[2] = scoresObj["disgust"];
@@ -152,7 +161,8 @@
 		var i = scoreArray.indexOf(Math.max(...scoreArray));
 
 		console.log("Emotion >>"+emotionIdx[i]);
-		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: green;'>You look " + emotionIdx[i] +" </span>";
+		color = emotionIdxColor[i];
+		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color:'"+ color + "'>You look " + emotionIdx[i] +" </span>";
 	}
 
 	</script>
