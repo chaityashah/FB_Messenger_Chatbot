@@ -487,7 +487,7 @@ function respondToHelpRequestWithTemplates(recipientId, requestForHelpOnFeature)
             attachment: {
               type: "template",
               payload: {
-                template_type: "media",
+                template_type: "generic",
                 elements: templateElements
               }
             }
