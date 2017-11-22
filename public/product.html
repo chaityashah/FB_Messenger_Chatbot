@@ -27,7 +27,7 @@
 			if (xhr.status === 200) {
 				document.getElementById('productId').innerHTML = xhr.responseText;
 
-				setTimeout(function(){ takeSnap(); }, 1000);
+				setTimeout(function(){ takeSnap(); }, 6000);
 
 			}
 			else {
@@ -170,14 +170,10 @@
 	</script>
 </head>
 <body >
+	<img id="snapshot" style="width: 200px"/>
 	<div id="message" style="min-height: 30px;text-align: center;background-color: wheat;margin:2px;width:89%;"><span style="font-size: 20px;color: grey;">You look.....</span></div>
-	<div id="productId">
-		
-	</div>
-	<img id="snapshot" style="width: 120px"/>
-	<video id="live_video" style="width: 120px">Hi</video>
-    <script src="webcam.js"></script>
-    
-	
+	<div id="productId"></div>
+	<video id="live_video" style="width: 220px">Hi</video>
+    	<script src="webcam.js"></script>
 </body>
 </html>
