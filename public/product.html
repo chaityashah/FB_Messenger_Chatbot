@@ -47,18 +47,21 @@
 
 		var video = document.getElementById('live_video');
 		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: red;'>Taking snap</span>";
-		setTimeout(function(){ console.log("do nothing"); }, 2000);
-		ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-		var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-		var dataURI = canvas.toDataURL('image/jpeg'); // can also use 'image/png'
-		var b = dataURItoBlob(dataURI);
-		//console.log("b >>"+b);
+		setTimeout(function(){ 
+			ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+			var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+			var dataURI = canvas.toDataURL('image/jpeg'); // can also use 'image/png'
+			var b = dataURItoBlob(dataURI);
+			//console.log("b >>"+b);
 
-		var myImage = document.getElementById('snapshot');
-		myImage.src = dataURI;
-		//console.log("dataURI:"+dataURI);
-		//console.log("imageData:"+imageData);
-		identifyEmotion(b);
+			var myImage = document.getElementById('snapshot');
+			myImage.src = dataURI;
+			//console.log("dataURI:"+dataURI);
+			//console.log("imageData:"+imageData);
+			identifyEmotion(b);
+
+		}, 2000);
+		
   	}
 
   	function identifyEmotion(dataUri) {
