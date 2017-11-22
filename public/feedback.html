@@ -172,12 +172,12 @@ function processResult(data) {
 	<button class="loginBtn loginBtn--facebook" onclick="takeSnap();return false;">
 		Give Live Feedback
 	</button>
-	<div id="message" style="min-height: 50px" onclick="change();"><span style="font-size: 20px;color: grey;"></span></div>
+	<div id="message" style="min-height: 50px"><span id="msgTxt" style="font-size: 20px;color: grey;" onclick="change();"></span></div>
 	<video id="live_video" style="width: 250px">Hi</video>
 	<script src="webcam.js"></script>
 	<img id="snapshot" style="width: 250px"/>
 	<script>
-		var text = ["Welcome", "Hi", "Sup dude"];
+		var text = ["anger","contempt","disgust","fear","happiness","neutral","sadness","surprise"];
 		var counter = 0;
 		var elem = document.getElementById("message");
 		setInterval(change, 500);
