@@ -144,12 +144,22 @@
 	"6":"sadness",
 	"7":"surprise"
 };
+	var emotionIdxColor = {"0":"red",
+						"1":"black",
+						"2":"black",
+						"3":"yellow",
+						"4":"green",
+						"5":"black",
+						"6":"Tan",
+						"7":"blue"
+					};
 
 function processResult(data) {
 	console.log("processResult >>"+JSON.stringify(data));
 	var scoresObj = data["scores"];
 	console.log("scoresObj >>"+JSON.stringify(scoresObj));
 	var scoreArray = [];
+		var emotionColor = "";
 	scoreArray[0] = scoresObj["anger"];
 	scoreArray[1] = scoresObj["contempt"];
 	scoreArray[2] = scoresObj["disgust"];
@@ -162,7 +172,10 @@ function processResult(data) {
 	var i = scoreArray.indexOf(Math.max(...scoreArray));
 
 	console.log("Emotion >>"+emotionIdx[i]);
-	document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: green;'>Your face shows " + emotionIdx[i] +" </span>";
+		emotionColor = emotionIdxColor[i];
+		console.log("emotionColor >>"+emotionColor);
+	document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: white;'>Your face shows " + emotionIdx[i] +" </span>";
+	document.getElementById("message").style.backgroundColor = emotionColor;
 }
 
 </script>
