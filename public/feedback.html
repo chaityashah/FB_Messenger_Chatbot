@@ -101,14 +101,14 @@
             data: dataUri
         })
 		.done(function(data) {
-			document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: Green;'>Your beautiful FACE broke our clumpsy API, Please Try again....</span>";
-			document.getElementById("message").style.backgroundColor = wheat;
+			//document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: Green;'>Your beautiful FACE broke our clumpsy API, Please Try again....</span>";
+			//document.getElementById("message").style.backgroundColor = wheat;
 			console.log(JSON.stringify(data));
 			processResult(data[0]);
 		})
 		.fail(function() {
 			document.getElementById("message").innerHTML = "<span style='font-size: 15px;color: red;'>Your beautiful FACE broke our clumpsy API, Please Try again....</span>";
-			document.getElementById("message").style.backgroundColor = wheat;
+			//document.getElementById("message").style.backgroundColor = wheat;
 		});
 	}
 
