@@ -339,7 +339,7 @@ function mergeImages(senderID, messageAttachments) {
         const imageName = 'image-'+imageCount+'.jpg';
         newImage.write('public/images/'+imageName, function(error, result) {
           imageCount ++;
-          const remixedUrl = 'https://mysterious-atoll-91672.herokuapp.com/images/'+imageName;
+          const remixedUrl = 'https://facify-chatbot.herokuapp.com/images/'+imageName;
           sendImageMessage(senderID, remixedUrl);
         });
       });
@@ -353,7 +353,7 @@ function sendGeneratedImage(senderID, messageAttachments) {
   const face = messageAttachments[0].payload.url; 
   userUploadedFace = face;
   const remixed = imageMixer(base, face);
-  const remixedUrl = 'https://mysterious-atoll-91672.herokuapp.com/images/${remixed}';
+  const remixedUrl = 'https://facify-chatbot.herokuapp.com/images/${remixed}';
   sendImageMessage(senderID, remixedUrl);
 }
 /*
@@ -792,4 +792,3 @@ app.listen(app.get('port'), function() {
 });
 
 module.exports = app;
-
