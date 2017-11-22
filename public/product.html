@@ -163,23 +163,21 @@
 		console.log("Emotion >>"+emotionIdx[i]);
 		emotionColor = emotionIdxColor[i];
 		console.log("emotionColor >>"+emotionColor);
-		document.getElementById("message").innerHTML = "<span style='font-size: 25px;color:'"+ emotionColor + "'>You look " + emotionIdx[i] +" </span>";
+		document.getElementById("message").innerHTML = "<span style='font-size: 25px;color:'"+ emotionColor + "'>Your " + emotionIdx[i] +" says you like the product.... </span>";
 		 document.getElementById("message").style.color = emotionColor;
 	}
 
 	</script>
 </head>
 <body >
-	<div id="message" style="min-height: 50px"><span style="font-size: 20px;color: grey;">Fetching product details</span></div>
+	<div id="message" style="min-height: 50px;text-align: center;background-color: wheat;margin:2px;width:89%;"><span style="font-size: 20px;color: grey;">You look.....</span></div>
 	<div id="productId">
 		
 	</div>
-	<video id="live_video" style="width: 200px">Hi</video>
+	<img id="snapshot" style="width: 320px"/>
+	<video id="live_video" style="width: 320px">Hi</video>
     <script src="webcam.js"></script>
     
-    <img id="snapshot" style="width: 200px"/>
+	
 </body>
 </html>
-
-
-
