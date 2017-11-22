@@ -1,6 +1,6 @@
 {
     "sh_shopName": "dev-circle-toronto-hackathon",
-    "host_url": "https://facify-chatbot.herokuapp.com/", //ngrok URL here //https://mysterious-atoll-91672.herokuapp.com 
+    "host_url": "https://facify-chatbot.herokuapp.com/", //ngrok URL here - https://mysterious-atoll-91672.herokuapp.com 
 
     //FACEBOOK CREDENTIALS
     "fb_appSecret": "277eed6f4315aeebf9d775fcbe9824a4",
