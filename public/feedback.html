@@ -3,21 +3,75 @@
 <head>
 	<title></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-	<script>
-	(function(d, s, id){
-		var js, fjs = d.getElementsByTagName(s)[0];
-		if (d.getElementById(id)) {return;}
-		js = d.createElement(s); js.id = id;
-		js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
-		fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'Messenger'));
+	<style>
+		body { padding: 2em; }
 
-	window.extAsyncInit = function() {
+
+		/* Shared */
+		.loginBtn {
+			box-sizing: border-box;
+			position: relative;
+			/* width: 13em;  - apply for fixed size */
+			margin: 0.2em;
+			padding: 0 15px 0 46px;
+			border: none;
+			text-align: left;
+			line-height: 34px;
+			white-space: nowrap;
+			border-radius: 0.2em;
+			font-size: 16px;
+			color: #FFF;
+		}
+		.loginBtn:before {
+			content: "";
+			box-sizing: border-box;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 34px;
+			height: 100%;
+		}
+		.loginBtn:focus {
+			outline: none;
+		}
+		.loginBtn:active {
+			box-shadow: inset 0 0 0 32px rgba(0,0,0,0.1);
+		}
+
+
+		/* Facebook */
+		.loginBtn--facebook {
+			background-color: #4C69BA;
+			background-image: linear-gradient(#4C69BA, #3B55A0);
+			/*font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;*/
+			text-shadow: 0 -1px 0 #354C8C;
+		}
+		.loginBtn--facebook:before {
+			border-right: #364e92 1px solid;
+			background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png') 6px 6px no-repeat;
+		}
+		.loginBtn--facebook:hover,
+		.loginBtn--facebook:focus {
+			background-color: #5B7BD5;
+			background-image: linear-gradient(#5B7BD5, #4864B1);
+		}
+
+	</style>
+	<script>
+		(function(d, s, id){
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'Messenger'));
+
+	/*window.extAsyncInit = function() {
 		setTimeout(function(){ takeSnap(); }, 2000);
-	};
-  	
-  	function takeSnap() {
-  		var canvas = document.createElement('canvas');
+	};*/
+
+	function takeSnap() {
+		var canvas = document.createElement('canvas');
 		canvas.width = 640;
 		canvas.height = 480;
 		var ctx = canvas.getContext('2d');
@@ -36,17 +90,17 @@
 		//console.log("dataURI:"+dataURI);
 		//console.log("imageData:"+imageData);
 		identifyEmotion(b);
-  	}
+	}
 
-  	function identifyEmotion(dataUri) {
+	function identifyEmotion(dataUri) {
 
-  		var params = {
+		var params = {
             // Request parameters
         };
 		//var b = dataURItoBlob(dataUri);
 		//console.log("b >>"+b);
 
-  		$.ajax({
+		$.ajax({
             // NOTE: You must use the same location in your REST call as you used to obtain your subscription keys.
             //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the 
             //   URL below with "westcentralus".
@@ -64,17 +118,17 @@
             //data: '{"url": "https://happyfacesprepschool.com/wp-content/uploads/2010/09/173-Copy-e1407188108897-1096x500.jpg"}',
             data: dataUri
         })
-        .done(function(data) {
-            document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: Green;'>Got result from Emotions API</span>";
-            console.log(JSON.stringify(data));
-            processResult(data[0]);
-        })
-        .fail(function() {
-            document.getElementById("message").innerHTML = "<span style='font-size: 15px;color: red;'>Oops..Something went wrong</span>";
-        });
-  	}
+		.done(function(data) {
+			document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: Green;'>Got result from Emotions API</span>";
+			console.log(JSON.stringify(data));
+			processResult(data[0]);
+		})
+		.fail(function() {
+			document.getElementById("message").innerHTML = "<span style='font-size: 15px;color: red;'>Oops..Something went wrong</span>";
+		});
+	}
 
-  	function dataURItoBlob(dataURI) {
+	function dataURItoBlob(dataURI) {
 	  // convert base64 to raw binary data held in a string
 	  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
 	  var byteString = atob(dataURI.split(',')[1]);
@@ -90,7 +144,7 @@
 
 	  // set the bytes of the buffer to the correct values
 	  for (var i = 0; i < byteString.length; i++) {
-	      ia[i] = byteString.charCodeAt(i);
+	  	ia[i] = byteString.charCodeAt(i);
 	  }
 
 	  // write the ArrayBuffer to a blob, and you're done
@@ -100,41 +154,45 @@
 	}
 
 	var emotionIdx = {"0":"anger",
-						"1":"contempt",
-						"2":"disgust",
-						"3":"fear",
-						"4":"happiness",
-						"5":"neutral",
-						"6":"sadness",
-						"7":"surprise"
-					};
+	"1":"contempt",
+	"2":"disgust",
+	"3":"fear",
+	"4":"happiness",
+	"5":"neutral",
+	"6":"sadness",
+	"7":"surprise"
+};
 
-	function processResult(data) {
-		console.log("processResult >>"+JSON.stringify(data));
-		var scoresObj = data["scores"];
-		console.log("scoresObj >>"+JSON.stringify(scoresObj));
-		var scoreArray = [];
-		scoreArray[0] = scoresObj["anger"];
-		scoreArray[1] = scoresObj["contempt"];
-		scoreArray[2] = scoresObj["disgust"];
-		scoreArray[3] = scoresObj["fear"];
-		scoreArray[4] = scoresObj["happiness"];
-		scoreArray[5] = scoresObj["neutral"];
-		scoreArray[6] = scoresObj["sadness"];
-		scoreArray[7] = scoresObj["surprise"];
+function processResult(data) {
+	console.log("processResult >>"+JSON.stringify(data));
+	var scoresObj = data["scores"];
+	console.log("scoresObj >>"+JSON.stringify(scoresObj));
+	var scoreArray = [];
+	scoreArray[0] = scoresObj["anger"];
+	scoreArray[1] = scoresObj["contempt"];
+	scoreArray[2] = scoresObj["disgust"];
+	scoreArray[3] = scoresObj["fear"];
+	scoreArray[4] = scoresObj["happiness"];
+	scoreArray[5] = scoresObj["neutral"];
+	scoreArray[6] = scoresObj["sadness"];
+	scoreArray[7] = scoresObj["surprise"];
 
-		var i = scoreArray.indexOf(Math.max(...scoreArray));
+	var i = scoreArray.indexOf(Math.max(...scoreArray));
 
-		console.log("Emotion >>"+emotionIdx[i]);
-		document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: green;'>You look " + emotionIdx[i] +" </span>";
-	}
+	console.log("Emotion >>"+emotionIdx[i]);
+	document.getElementById("message").innerHTML = "<span style='font-size: 20px;color: green;'>You look " + emotionIdx[i] +" </span>";
+}
 
-	</script>
+</script>
 </head>
 <body >
+
+	<button class="loginBtn loginBtn--facebook" onclick="takeSnap();return false;">
+		Give Live Feedback
+	</button>
 	<div id="message" style="min-height: 50px"><span style="font-size: 20px;color: grey;">Fetching product details</span></div>
 	<video id="live_video" style="width: 200px">Hi</video>
-    <script src="webcam.js"></script>
-    <img id="snapshot" style="width: 200px"/>
+	<script src="webcam.js"></script>
+	<img id="snapshot" style="width: 200px"/>
 </body>
 </html>
