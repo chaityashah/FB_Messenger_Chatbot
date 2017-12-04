@@ -1,6 +1,7 @@
 # FACIFY - A Facebook Messanger Shopping Chat Bot built with Facial Emotional AI Capability
 > This Bot is built as part of Facebook Developer Circle Toronto Hackathon 2017
 
+
 ## What makes us to come up with this idea ?.... 
 We noticed the real difference in In-store shopping and Online Shopping is the personal touch and assistance which we get In-store.
 
@@ -41,6 +42,7 @@ We noticed the real difference in In-store shopping and Online Shopping is the p
 * Javscript/Jquery (ES6)
 * NLP (Facebook in-built NLP)
 * botmock.com [Please refer this link for complete flow of Facify Bot] (https://botmock.com/mocks/748f6990-c70b-11e7-869a-ef0dd7da9283/export/7497d770-c70b-11e7-950e-5f27602d5836)
+
 
 ## Future Plan with Facify - Possibilities are endless - Here are the few ideas
 
@@ -107,9 +109,9 @@ Follow these steps to get our bot configured and off the ground.
 
 * Configure the Webhooks product
     * App Dashboard > {Your App} > Messenger > Webhooks > Setup Webhooks
-        * Callback URL:  https://{your unique url}.ngrok.io/webhook
+        * Callback URL: https://{your unique url}.ngrok.io/webhook
             * If you close/restart the ngrok service, repeat this step with the new URL.
-        * Verify token: use the value you defined for the fb_validationToken field in config/default.json 
+        * Verify token: Use the value you defined for the fb_validationToken field in config/default.json 
         * Subscription fields: select messages and messaging_postbacks as a minimum
     * App Dashboard > {Your App} > Messenger > Webhooks > Select a Page... > {select your page} > Subscribe
 
