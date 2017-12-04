@@ -22,6 +22,7 @@ We noticed the real difference in In-store shopping and Online Shopping is the p
     * Also, it is always hard to retain customers online and get them back on platform for further purchases
 * So All of the above is answered by our bot (Atleast some of them for now, we are still trying to make it intelligent)
 
+
 ## Key Features of Facify Bot
 * Below are the capabilities of the Bot as of its version 1.0
 
@@ -40,7 +41,7 @@ We noticed the real difference in In-store shopping and Online Shopping is the p
 * Emotions API (Microsoft)
 * Javscript/Jquery (ES6)
 * NLP (Facebook in-built NLP)
-* botmock.com [Please refer this link for complete flow of Facify] (https://botmock.com/mocks/748f6990-c70b-11e7-869a-ef0dd7da9283/export/7497d770-c70b-11e7-950e-5f27602d5836)
+* botmock.com [Please refer this link for complete flow of Facify Bot] (https://botmock.com/mocks/748f6990-c70b-11e7-869a-ef0dd7da9283/export/7497d770-c70b-11e7-950e-5f27602d5836)
 
 
 ## Future Plan with Facify - Possibilities are endless - Here are the few ideas
